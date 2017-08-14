@@ -38,6 +38,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.util.SafeArrayList;
+import com.simsilica.lemur.GuiGlobals;
 import com.simsilica.lemur.focus.FocusChangeEvent;
 import com.simsilica.lemur.focus.FocusChangeListener;
 import com.simsilica.lemur.focus.FocusTarget;
@@ -283,30 +284,41 @@ public class GuiControl extends AbstractNodeControl<GuiControl>
         if( layout != null ) {
             layout.calculatePreferredSize(size);
         }
-//        Vector3f lastSize = new Vector3f(size);
-        for( int i = componentStack.size() - 1; i >= 0; i-- ) {
-            componentStack.get(i).calculatePreferredSize(size);
-//            if( size.x < lastSize.x || size.y < lastSize.y || size.z < lastSize.z ) {
-//                throw new RuntimeException("Component:" + componentStack.get(i)
-//                                + " shrunk the preferred size. Before:" + lastSize
-//                                + " after:" + size);
-//            }
-        }
 
-        if( size.x < 0) size.x = 0;
-        if( size.y < 0) size.y = 0;
-        if( size.z < 0) size.z = 0;
+        if(GuiGlobals.getInstance().isDevMode()) {
+            Vector3f lastSize = new Vector3f(size);
+            for( int i = componentStack.size() - 1; i >= 0; i-- ) {
+                componentStack.get(i).calculatePreferredSize(size);
+                if (size.x < lastSize.x || size.y < lastSize.y || size.z < lastSize.z) {
+                    throw new RuntimeException("Component:" + componentStack.get(i)
+                            + " shrunk the preferred size. Before:" + lastSize
+                            + " after:" + size);
+                }
+            }
+        } else {
+            for( int i = componentStack.size() - 1; i >= 0; i-- ) {
+                componentStack.get(i).calculatePreferredSize(size);
+            }
+
+            if (size.x < 0) size.x = 0;
+            if (size.y < 0) size.y = 0;
+            if (size.z < 0) size.z = 0;
+        }
 
         return size;
     }
 
     public void setSize( Vector3f size ) {
-        if( size.x < 0) size.x = 0;
-        if( size.y < 0) size.y = 0;
-        if( size.z < 0) size.z = 0;
-        // if( size.x < 0 || size.y < 0 || size.z < 0 ) {
-        //    throw new IllegalArgumentException("Size cannot be negative:" + size);
-        //}            
+        if(GuiGlobals.getInstance().isDevMode()) {
+            if (size.x < 0 || size.y < 0 || size.z < 0) {
+                throw new IllegalArgumentException("Size cannot be negative:" + size);
+            }
+        } else {
+            if( size.x < 0) size.x = 0;
+            if( size.y < 0) size.y = 0;
+            if( size.z < 0) size.z = 0;
+        }
+
         lastSize.set(size);
         
         // The components will take their parts out of size.

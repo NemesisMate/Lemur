@@ -113,6 +113,8 @@ public class GuiGlobals {
     private PopupState popupState;
     private String iconBase;
 
+    private boolean devMode;
+
     private Styles styles;
 
     public static void initialize( Application app ) {
@@ -179,6 +181,8 @@ public class GuiGlobals {
 
         ViewPort main = app.getViewPort();
         setupGuiComparators(main);
+
+        devMode = true;
     }
 
     protected AssetManager getAssetManager() {
@@ -403,5 +407,13 @@ public class GuiGlobals {
         }
 
         return cam.getScreenCoordinates(pos);
+    }
+
+    public boolean isDevMode() {
+        return devMode;
+    }
+
+    public void setDevMode(boolean devMode) {
+        this.devMode = devMode;
     }
 }
