@@ -13,6 +13,9 @@ buildscript {
 
 apply plugin: 'java'
 
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
+
 version='1.10.2-SNAPSHOT'
 
 ext.jmeVersion='3.1.0-alpha4' // but must be alpha4 or better
